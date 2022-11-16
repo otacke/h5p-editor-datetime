@@ -223,7 +223,6 @@ export default class DateTime {
     }
 
     const date = new Date(timeString);
-    if (date === 'Invalid Date') {
     if (date.toString() === 'Invalid Date') {
       return timeString; // No string we can work with
     }
