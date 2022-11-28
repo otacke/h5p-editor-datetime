@@ -70,6 +70,9 @@ export default class DateTime {
       }
     }, this.field.datetime || {});
 
+    // Convert stored ISO8601 value to local format for date picker
+    this.inputField.value = this.toLocalFormat(this.params);
+
     // Instantiate date picker
     if ((H5P.jQuery(this.inputField)).Zebra_DatePicker) {
       this.initZebraDatePicker();
@@ -299,5 +302,27 @@ export default class DateTime {
       datePattern: datePattern,
       dateTimePattern: `${datePattern} H:i:s`
     };
+  }
+
+  /**
+   * Convert ISO8601 to local string.
+   *
+   * @param {string} isoValue Date in ISO8601 format.
+   * @returns {string} Local string for date picker.
+   */
+  toLocalFormat(isoValue) {
+    if ((isoValue ?? '') === '') {
+      return '';
+    }
+
+    const date = new Date(isoValue);
+
+    return this.localization.dateTimePattern
+      .replace('Y', date.getFullYear())
+      .replace('m', date.getMonth() + 1)
+      .replace('d', date.getDate())
+      .replace('H', date.getHours())
+      .replace('i', date.getMinutes())
+      .replace('s', date.getSeconds());
   }
 }
