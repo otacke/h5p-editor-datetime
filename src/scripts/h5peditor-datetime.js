@@ -318,11 +318,11 @@ export default class DateTime {
     const date = new Date(isoValue);
 
     return this.localization.dateTimePattern
-      .replace('Y', date.getFullYear())
-      .replace('m', date.getMonth() + 1)
-      .replace('d', date.getDate())
-      .replace('H', date.getHours())
-      .replace('i', date.getMinutes())
-      .replace('s', date.getSeconds());
+      .replace('Y', `${date.getFullYear()}`.padStart(4, '0'))
+      .replace('m', `${date.getMonth() + 1}`.padStart(2, '0'))
+      .replace('d', `${date.getDate()}`.padStart(2, '0'))
+      .replace('H', `${date.getHours()}`.padStart(2, '0'))
+      .replace('i', `${date.getMinutes()}`.padStart(2, '0'))
+      .replace('s', `${date.getSeconds()}`.padStart(2, '0'));
   }
 }
