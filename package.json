@@ -1,6 +1,6 @@
 {
   "name": "h5p-editor-datetime",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "H5P editor widget for setting time and date",
   "private": true,
   "scripts": {
