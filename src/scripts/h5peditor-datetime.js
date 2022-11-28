@@ -232,27 +232,27 @@ export default class DateTime {
     }
 
     const yearPattern = this.localization.dateTimePattern
-      .replace('Y', '(\\d+)').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('d', '\\d+').replace('Y', '(\\d+)').replace('m', '\\d+')
       .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
 
     const monthPattern = this.localization.dateTimePattern
-      .replace('Y', '\\d+').replace('m', '(\\d+)').replace('d', '\\d+')
+      .replace('d', '\\d+').replace('Y', '\\d+').replace('m', '(\\d+)')
       .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
 
     const dayPattern = this.localization.dateTimePattern
-      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '(\\d+)')
+      .replace('d', '(\\d+)').replace('Y', '\\d+').replace('m', '\\d+')
       .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
 
     const hoursPattern = this.localization.dateTimePattern
-      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('d', '\\d+').replace('Y', '\\d+').replace('m', '\\d+')
       .replace('H', '(\\d+)').replace('i', '\\d+').replace('s', '\\d+');
 
     const minutesPattern = this.localization.dateTimePattern
-      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('d', '\\d+').replace('Y', '\\d+').replace('m', '\\d+')
       .replace('H', '\\d+').replace('i', '(\\d+)').replace('s', '\\d+');
 
     const secondsPattern = this.localization.dateTimePattern
-      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('d', '\\d+').replace('Y', '\\d+').replace('m', '\\d+')
       .replace('H', '\\d+').replace('i', '\\d+').replace('s', '(\\d+)');
 
     const date = new Date(
