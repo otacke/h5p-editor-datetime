@@ -106,7 +106,11 @@ export default class DateTime {
    * @returns {boolean} True, if current value is valid, else false.
    */
   validate() {
-    this.inputField.value = this.addTimezoneOffset(this.inputField.value);
+    const isoValue = (this.inputField?.value ?? '') === '' ?
+      '' :
+      this.toISOString(this.inputField.value);
+
+    this.setValue(this.field, isoValue);
 
     return this.fieldInstance.validate();
   }
@@ -132,9 +136,11 @@ export default class DateTime {
    * Handle date from Zebre date picker changed.
    */
   handleDateChanged() {
-    if (this.inputField.value !== '') {
-      this.inputField.value = this.addTimezoneOffset(this.inputField.value);
-    }
+    const isoValue = (this.inputField?.value ?? '') === '' ?
+      '' :
+      this.toISOString(this.inputField.value);
+
+    this.setValue(this.field, isoValue);
 
     // Trigger storing the value
     H5P.jQuery(this.inputField).change();
@@ -212,27 +218,54 @@ export default class DateTime {
   }
 
   /**
-   * Add timezone offset to time string from Zebra date picker.
+   * Convert date string from date picker to ISO string.
    *
-   * @param {string} timeString Time string from Zebra date picker.
-   * @returns {string} Time string with timezone offset or old value.
+   * @param {string} timeString Time string.
+   * @returns {string} ISO8601 string.
    */
-  addTimezoneOffset(timeString) {
-    if (typeof timeString !== 'string' || timeString.indexOf('GMT') !== -1) {
+  toISOString(timeString) {
+    if (typeof timeString !== 'string') {
       return timeString; // No string we can work with
     }
 
-    const date = new Date(timeString);
+    const yearPattern = this.localization.dateTimePattern
+      .replace('Y', '(\\d+)').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
+
+    const monthPattern = this.localization.dateTimePattern
+      .replace('Y', '\\d+').replace('m', '(\\d+)').replace('d', '\\d+')
+      .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
+
+    const dayPattern = this.localization.dateTimePattern
+      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '(\\d+)')
+      .replace('H', '\\d+').replace('i', '\\d+').replace('s', '\\d+');
+
+    const hoursPattern = this.localization.dateTimePattern
+      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('H', '(\\d+)').replace('i', '\\d+').replace('s', '\\d+');
+
+    const minutesPattern = this.localization.dateTimePattern
+      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('H', '\\d+').replace('i', '(\\d+)').replace('s', '\\d+');
+
+    const secondsPattern = this.localization.dateTimePattern
+      .replace('Y', '\\d+').replace('m', '\\d+').replace('d', '\\d+')
+      .replace('H', '\\d+').replace('i', '\\d+').replace('s', '(\\d+)');
+
+    const date = new Date(
+      parseInt(timeString.match(new RegExp(yearPattern))[1]),
+      parseInt(timeString.match(new RegExp(monthPattern))[1]) - 1,
+      parseInt(timeString.match(new RegExp(dayPattern))[1]),
+      parseInt(timeString.match(new RegExp(hoursPattern))[1]),
+      parseInt(timeString.match(new RegExp(minutesPattern))[1]),
+      parseInt(timeString.match(new RegExp(secondsPattern))[1])
+    );
+
     if (date.toString() === 'Invalid Date') {
       return timeString; // No string we can work with
     }
 
-    const offset = date.getTimezoneOffset();
-    const sign = offset < 0 ? '+' : '-';
-    const hours = Math.floor(Math.abs(offset) / 60).toString().padStart(2, '0');
-    const minutes = (Math.abs(offset) - hours * 60).toString().padStart(2, '0');
-
-    return `${timeString} GMT${sign}${hours}${minutes}`;
+    return date.toISOString();
   }
 
   /**
