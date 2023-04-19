@@ -13,7 +13,6 @@ export default class DateTime {
    * code or the timestamp.
    *
    * TODO: Improve Zebra DataPicker to support timezones.
-   *
    * @class
    * @param {object} parent Parent element in semantics.
    * @param {object} field Semantics field properties.
@@ -96,7 +95,6 @@ export default class DateTime {
 
   /**
    * Append field to wrapper. Invoked by H5P core.
-   *
    * @param {H5P.jQuery} $wrapper Wrapper.
    */
   appendTo($wrapper) {
@@ -105,7 +103,6 @@ export default class DateTime {
 
   /**
    * Validate current values. Invoked by H5P core.
-   *
    * @returns {boolean} True, if current value is valid, else false.
    */
   validate() {
@@ -151,7 +148,6 @@ export default class DateTime {
 
   /**
    * Load datepicker library from H5P editor core.
-   *
    * @param {function} callback Callback.
    */
   loadDatePickerLib(callback) {
@@ -195,7 +191,6 @@ export default class DateTime {
 
   /**
    * Get simplified date pattern for language code.
-   *
    * @param {string} [languageCode] Language code.
    * @returns {string} Date pattern for language code.
    */
@@ -222,7 +217,6 @@ export default class DateTime {
 
   /**
    * Convert date string from date picker to ISO string.
-   *
    * @param {string} timeString Time string.
    * @returns {string} ISO8601 string.
    */
@@ -275,7 +269,6 @@ export default class DateTime {
    * Get local names of months and weekdays plus format string.
    * Language strings could as well be set in translation file, but this way
    * we can support them out of the box :-)
-   *
    * @param {string} [languageCode] Language code.
    * @returns {object} Months and weekdays.
    */
@@ -306,7 +299,6 @@ export default class DateTime {
 
   /**
    * Convert ISO8601 to local string.
-   *
    * @param {string} isoValue Date in ISO8601 format.
    * @returns {string} Local string for date picker.
    */
