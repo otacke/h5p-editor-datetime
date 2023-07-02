@@ -1,4 +1,4 @@
-import '../styles/h5peditor-datetime.scss';
+import '@styles/h5peditor-datetime.scss';
 import Util from './util';
 
 export default class DateTime {
