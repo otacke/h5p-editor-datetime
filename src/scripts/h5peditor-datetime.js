@@ -171,11 +171,23 @@ export default class DateTime {
     this.observer = new IntersectionObserver((entries) => {
       if (entries[0].intersectionRatio === 1) {
         this.observer.unobserve(this.inputField); // Only need instantiate once.
-        const icon = this.inputField?.parentNode
-          .querySelector('.Zebra_DatePicker_Icon');
-        if (icon) {
-          icon.style.top = `${(this.inputField.offsetHeight - icon.offsetHeight) / 2}px`;
+
+        const wrapper = this.inputField?.parentNode;
+        if (!wrapper) {
+          return;
         }
+
+        const icon = wrapper.querySelector('.Zebra_DatePicker_Icon');
+        if (!icon) {
+          return;
+        }
+
+        wrapper.style.display = 'inline-block';
+        wrapper.style.position = 'relative';
+        wrapper.style.float = 'none';
+
+        icon.style.top = `${(this.inputField.offsetHeight - icon.offsetHeight) / 2}px`;
+        icon.style.right = '10px';
       }
     }, {
       root: document.documentElement,
