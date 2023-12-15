@@ -4,7 +4,6 @@
   "description": "H5P editor widget for setting time and date",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "stylelint './src/**/*.scss' && eslint './src/**/*.js'",
     "build": "webpack --mode=production",
     "watch": "webpack --watch --mode=development"
