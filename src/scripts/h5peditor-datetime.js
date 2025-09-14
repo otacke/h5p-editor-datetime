@@ -1,6 +1,24 @@
 import '@styles/h5peditor-datetime.scss';
 import Util from './util.js';
 
+/** @constant {number} MONTHS_IN_YEAR Number of months in a year */
+const MONTHS_IN_YEAR = 12;
+
+/** @constant {number} REFERENCE_YEAR Reference year for date calculations */
+const REFERENCE_YEAR = 2000;
+
+/** @constant {number} WEEKDAY_START_DAY First day to extract weekday names from */
+const REFERENCE_WEEKDAY_START_DAY = 2;
+
+/** @constant {number} WEEKDAY_END_DAY Last day (exclusive) to extract weekday names from */
+const REFERENCE_WEEKDAY_END_DAY = 9;
+
+/** @constant {number} PADDING_FOUR Padding for strings to length four */
+const PADDING_FOUR = 4;
+
+/** @constant {number} PADDING_TWO Padding for strings to length two */
+const PADDING_TWO = 2;
+
 export default class DateTime {
 
   /**
@@ -65,8 +83,8 @@ export default class DateTime {
         },
         onClear: () => {
           this.handleDateChanged();
-        }
-      }
+        },
+      },
     }, this.field.datetime || {});
 
     // Convert stored ISO8601 value to local format for date picker
@@ -158,7 +176,7 @@ export default class DateTime {
       error: (response, error) => {
         console.warn(`${this.getTitle()}: error loading libraries. ${error}`);
       },
-      async: true
+      async: true,
     });
   }
 
@@ -186,18 +204,19 @@ export default class DateTime {
         wrapper.style.position = 'relative';
         wrapper.style.float = 'none';
 
+        // eslint-disable-next-line no-magic-numbers
         icon.style.top = `${(this.inputField.offsetHeight - icon.offsetHeight) / 2}px`;
         icon.style.right = '10px';
       }
     }, {
       root: document.documentElement,
-      threshold: [1]
+      threshold: [1],
     });
     this.observer.observe(this.inputField);
 
     // Instantiate Zebra date picker
     H5P.jQuery(this.inputField).Zebra_DatePicker(
-      this.field.datetime.zebraOptions
+      this.field.datetime.zebraOptions,
     );
   }
 
@@ -267,7 +286,7 @@ export default class DateTime {
       parseInt(timeString.match(new RegExp(dayPattern))[1]),
       parseInt(timeString.match(new RegExp(hoursPattern))[1]),
       parseInt(timeString.match(new RegExp(minutesPattern))[1]),
-      parseInt(timeString.match(new RegExp(secondsPattern))[1])
+      parseInt(timeString.match(new RegExp(secondsPattern))[1]),
     );
 
     if (date.toString() === 'Invalid Date') {
@@ -288,15 +307,15 @@ export default class DateTime {
     const months = [];
     const intlMonths = new Intl.DateTimeFormat(
       languageCode, { month: 'long' });
-    for (let i = 0; i < 12; i++) {
-      months.push(intlMonths.format(new Date(2000, i, 1)));
+    for (let i = 0; i < MONTHS_IN_YEAR; i++) {
+      months.push(intlMonths.format(new Date(REFERENCE_YEAR, i, 1)));
     }
 
     const weekdays = [];
     const intlWeekdays = new Intl.DateTimeFormat(
       languageCode, { weekday: 'long' });
-    for (let i = 2; i < 9; i++) {
-      weekdays.push(intlWeekdays.format(new Date(2000, 0, i)));
+    for (let i = REFERENCE_WEEKDAY_START_DAY; i < REFERENCE_WEEKDAY_END_DAY; i++) {
+      weekdays.push(intlWeekdays.format(new Date(REFERENCE_YEAR, 0, i)));
     }
 
     const datePattern = this.getDatePattern(languageCode);
@@ -305,7 +324,7 @@ export default class DateTime {
       months: months,
       weekdays: weekdays,
       datePattern: datePattern,
-      dateTimePattern: `${datePattern} H:i:s`
+      dateTimePattern: `${datePattern} H:i:s`,
     };
   }
 
@@ -322,11 +341,11 @@ export default class DateTime {
     const date = new Date(isoValue);
 
     return this.localization.dateTimePattern
-      .replace('Y', `${date.getFullYear()}`.padStart(4, '0'))
-      .replace('m', `${date.getMonth() + 1}`.padStart(2, '0'))
-      .replace('d', `${date.getDate()}`.padStart(2, '0'))
-      .replace('H', `${date.getHours()}`.padStart(2, '0'))
-      .replace('i', `${date.getMinutes()}`.padStart(2, '0'))
-      .replace('s', `${date.getSeconds()}`.padStart(2, '0'));
+      .replace('Y', `${date.getFullYear()}`.padStart(PADDING_FOUR, '0'))
+      .replace('m', `${date.getMonth() + 1}`.padStart(PADDING_TWO, '0'))
+      .replace('d', `${date.getDate()}`.padStart(PADDING_TWO, '0'))
+      .replace('H', `${date.getHours()}`.padStart(PADDING_TWO, '0'))
+      .replace('i', `${date.getMinutes()}`.padStart(PADDING_TWO, '0'))
+      .replace('s', `${date.getSeconds()}`.padStart(PADDING_TWO, '0'));
   }
 }
