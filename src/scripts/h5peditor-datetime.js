@@ -19,6 +19,12 @@ const PADDING_FOUR = 4;
 /** @constant {number} PADDING_TWO Padding for strings to length two */
 const PADDING_TWO = 2;
 
+/**
+ * Shared promise for loading the Zebra date picker library, so it's only loaded once.
+ * @type {Promise|null}
+ */
+let datePickerLibPromise = null;
+
 export default class DateTime {
 
   /**
@@ -165,19 +171,34 @@ export default class DateTime {
   }
 
   /**
-   * Load datepicker library from H5P editor core.
-   * @param {function} callback Callback.
+   * Load datepicker library from H5P editor core. The actual request is fired
+   * only once across all instances; concurrent callers await the same promise.
+   * @param {function} callback Callback invoked once the library is loaded.
    */
   loadDatePickerLib(callback) {
-    H5P.jQuery.ajax({
-      url: `${H5PEditor.basePath}libs/zebra_datepicker.min.js`,
-      dataType: 'script',
-      success: callback,
-      error: (response, error) => {
-        console.warn(`${this.getTitle()}: error loading libraries. ${error}`);
-      },
-      async: true,
-    });
+    if (!datePickerLibPromise) {
+      datePickerLibPromise = new Promise((resolve, reject) => {
+        H5P.jQuery.ajax({
+          url: `${H5PEditor.basePath}libs/zebra_datepicker.min.js`,
+          dataType: 'script',
+          success: resolve,
+          error: (response, error) => {
+            reject(error);
+          },
+          async: true,
+        });
+      });
+    }
+
+    datePickerLibPromise
+      .then(() => {
+        callback();
+      })
+      .catch((error) => {
+        // Allow a later instance to retry the failed load.
+        datePickerLibPromise = null;
+        console.warn(`${this.getTitle()}: error loading ZebraDatePicker. ${error}`);
+      });
   }
 
   // Initialize Zebra date picker.
